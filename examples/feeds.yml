@@ -4,7 +4,7 @@
   description: Open Source Archives
   url: https://github.blog/category/open-source/
   matchers:
-    page:
+    itemUrl:
       selector: article a
       attr: href
     title:
