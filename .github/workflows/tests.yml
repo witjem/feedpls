@@ -1,16 +1,16 @@
-name: test_backend
+name: tests
 
 on:
   push:
     branches:
     tags:
     paths:
-      - ".github/workflows/ci-test-backend.yml"
+      - ".github/workflows/tests.yml"
       - "!examples/"
       - "!**.md"
   pull_request:
     paths:
-      - ".github/workflows/ci-test-backend.yml"
+      - ".github/workflows/tests.yml"
       - "!examples/"
       - "!**.md"
 jobs:
