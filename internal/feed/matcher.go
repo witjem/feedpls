@@ -5,18 +5,19 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
+	"golang.org/x/net/html"
 )
 
 var ErrMatchNotFound = errors.New("no match found")
 
-// Matcher - defined how find data from html.
-// Attr is optional. Init it if you want to get data from attribute
+// Matcher defined how find data from HTML.
+// Attr is optional. Init it if you want to get data from attribute.
 type Matcher struct {
-	Selector string
-	Attr     string
+	Selector string `yaml:"selector"`
+	Attr     string `yaml:"attr"`
 }
 
-// Find gets the first matched data
+// Find gets the first matched data.
 func (m Matcher) Find(doc *goquery.Document) (string, error) {
 	res, err := m.FindAll(doc)
 	if err != nil {
@@ -27,7 +28,7 @@ func (m Matcher) Find(doc *goquery.Document) (string, error) {
 }
 
 // FindAll gets all matched data.
-// When no data found, return ErrMatchNotFound
+// When no data found, return ErrMatchNotFound.
 func (m Matcher) FindAll(doc *goquery.Document) ([]string, error) {
 	nodes := doc.Find(m.Selector).Nodes
 	res := make([]string, 0, len(nodes))
@@ -45,7 +46,10 @@ func (m Matcher) FindAll(doc *goquery.Document) ([]string, error) {
 			continue
 		}
 
-		res = append(res, node.Data)
+		// trys read text from HTML tag, like <title>text</title>
+		if node.LastChild != nil && node.LastChild.Type == html.TextNode {
+			res = append(res, node.LastChild.Data)
+		}
 	}
 
 	if len(res) == 0 {
@@ -55,15 +59,15 @@ func (m Matcher) FindAll(doc *goquery.Document) ([]string, error) {
 	return res, nil
 }
 
-// TimeMatcher is matcher for time
+// TimeMatcher is matcher for time.
 type TimeMatcher struct {
-	Matcher
+	Matcher `yaml:",inline"`
 
 	// Layout is a standard time layout for example time.RFC3339
-	Layout string
+	Layout string `yaml:"layout"`
 }
 
-// FindTime gets matched time
+// FindTime gets matched time.
 func (t TimeMatcher) FindTime(doc *goquery.Document) (time.Time, error) {
 	content, err := t.Find(doc)
 	if err != nil {

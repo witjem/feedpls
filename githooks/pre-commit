@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+# run linter and tests
+make lint tests

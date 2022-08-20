@@ -9,7 +9,7 @@ linters-settings:
   govet:
     check-shadowing: true
   golint:
-    min-confidence: 0.1
+    min-confidence: 0
   maligned:
     suggest-new: true
   goconst:
@@ -35,6 +35,7 @@ linters:
     - megacheck
     - revive
     - govet
+    - godot
     - unconvert
     - megacheck
     - structcheck

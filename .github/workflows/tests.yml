@@ -1,0 +1,40 @@
+name: test_backend
+
+on:
+  push:
+    branches:
+    tags:
+    paths:
+      - ".github/workflows/ci-test-backend.yml"
+      - "!examples/"
+      - "!**.md"
+  pull_request:
+    paths:
+      - ".github/workflows/ci-test-backend.yml"
+      - "!examples/"
+      - "!**.md"
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: debug if needed
+        run: if [[ "$DEBUG" == "true" ]]; then env; fi
+        env:
+          DEBUG: ${{secrets.DEBUG}}
+
+      - name: install go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: install golangci-lint
+        run: |
+          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $GITHUB_WORKSPACE v1.39.0
+
+      - name: test and lint backend
+        run: |
+          go test -race -timeout=60s ./...
+          $GITHUB_WORKSPACE/golangci-lint --config ${GITHUB_WORKSPACE}/.golangci.yml run --out-format=github-actions ./...

@@ -14,47 +14,45 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Config struct {
-	ID             string
-	Title          string
-	Description    string
-	SourceURL      *url.URL
-	Matchers       Matchers
-	PostProcessors []PostProcessor
+// SourceConfig describe base feed data and how gets items data.
+type SourceConfig struct {
+	FeedID      string   `yaml:"id"`
+	Title       string   `yaml:"title"`
+	Description string   `yaml:"description"`
+	URL         string   `yaml:"url"`
+	Matchers    Matchers `yaml:"matchers"`
 }
 
+// Matchers description of how to find data for Item.
 type Matchers struct {
-	Page        Matcher
-	Title       Matcher
-	Description Matcher
-	Published   TimeMatcher
+	ItemURL     Matcher     `yaml:"itemUrl"`
+	Title       Matcher     `yaml:"title"`
+	Description Matcher     `yaml:"description"`
+	Published   TimeMatcher `yaml:"published"`
 }
 
-type PostProcessor struct {
-	Type    string
-	Section string
-	Props   map[string]string
-}
-
+// WebClient interface for get content by URL.
 type WebClient interface {
 	Get(ctx context.Context, url string) (io.ReadCloser, error)
 }
 
+// Source responsible for gets Feed using by specified SourceConfig.
 type Source struct {
-	Config
+	SourceConfig
 	webClient WebClient
 }
 
-func NewSource(cfg Config, webClient WebClient) Source {
-	return Source{
-		Config:    cfg,
-		webClient: webClient,
+// NewSource responsible for creating Source.
+func NewSource(cfg SourceConfig, webClient WebClient) *Source {
+	return &Source{
+		SourceConfig: cfg,
+		webClient:    webClient,
 	}
 }
 
-// Fetch - Trying fetch Feed from source
-func (s Source) Fetch(ctx context.Context) (Feed, error) {
-	content, err := s.webClient.Get(ctx, s.SourceURL.String())
+// Fetch trying fetch Feed from source.
+func (s *Source) Fetch(ctx context.Context) (Feed, error) {
+	content, err := s.webClient.Get(ctx, s.URL)
 	if err != nil {
 		return Feed{}, errors.Wrap(err, "failed to get main page content")
 	}
@@ -67,16 +65,16 @@ func (s Source) Fetch(ctx context.Context) (Feed, error) {
 	}
 
 	matchers := s.Matchers
-	links, err := matchers.Page.FindAll(doc)
+	links, err := matchers.ItemURL.FindAll(doc)
 	if err != nil {
 		return Feed{}, errors.Wrap(err, "failed to find links from main page")
 	}
 
 	items := make([]Item, 0, len(links))
 	for _, link := range links {
-		item, err := s.fetchItem(ctx, link)
+		item, err := s.getItem(ctx, link)
 		if err != nil {
-			log.Printf("[WARN] skip page [%s] from source [%s], err: [%s]", link, s.SourceURL, err)
+			log.Printf("[WARN] skip page [%s] from source [%s], err: [%s]", link, s.URL, err)
 
 			continue
 		}
@@ -85,23 +83,23 @@ func (s Source) Fetch(ctx context.Context) (Feed, error) {
 	}
 
 	return Feed{
-		ID:          s.ID,
+		ID:          s.FeedID,
 		Title:       s.Title,
-		Link:        s.SourceURL.String(),
+		Link:        s.URL,
 		Description: s.Description,
 		Items:       items,
 	}, nil
 }
 
-// fetchItem gets Item by link
-// When any item Matchers (for example title or description) not found, then return error
-func (s Source) fetchItem(ctx context.Context, link string) (Item, error) {
-	itemURL, err := s.toURL(link)
+// getItem gets Item by link.
+// When any item Matchers (for example title or description) not found, then return error.
+func (s *Source) getItem(ctx context.Context, link string) (Item, error) {
+	itemURL, err := s.toItemURL(link)
 	if err != nil {
 		return Item{}, errors.Wrap(err, "failed fetch item")
 	}
 
-	newsContent, err := s.webClient.Get(ctx, itemURL.String())
+	newsContent, err := s.webClient.Get(ctx, itemURL)
 	if err != nil {
 		return Item{}, errors.Wrap(err, "failed get item content")
 	}
@@ -131,16 +129,21 @@ func (s Source) fetchItem(ctx context.Context, link string) (Item, error) {
 
 	return Item{
 		Title:       title,
-		Link:        itemURL.String(),
+		Link:        itemURL,
 		Description: description,
 		Published:   published,
 	}, nil
 }
 
-func (s Source) toURL(link string) (*url.URL, error) {
+func (s *Source) toItemURL(link string) (string, error) {
 	if strings.HasPrefix(link, "/") {
-		return url.Parse(s.SourceURL.Scheme + "://" + s.SourceURL.Host + link)
+		sourceURL, err := url.Parse(s.URL)
+		if err != nil {
+			return "", err
+		}
+
+		return sourceURL.Scheme + "://" + sourceURL.Host + link, nil
 	}
 
-	return url.Parse(link)
+	return link, nil
 }

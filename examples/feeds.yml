@@ -1,0 +1,35 @@
+---
+- id: github-blog-open-source
+  title: The GitHub Blog | Open Source
+  description: Open Source Archives
+  url: https://github.blog/category/open-source/
+  matchers:
+    page:
+      selector: article a
+      attr: href
+    title:
+      selector: title
+    description:
+      selector: meta[name='description']
+      attr: content
+    published:
+      selector: meta[name='parsely-pub-date']
+      attr: content
+      layout: 2006-01-02T15:04:05Z07:00
+- id: github-blog-engineering
+  title: The GitHub Blog | Engineering
+  description: Engineering
+  url: https://github.blog/category/engineering/
+  matchers:
+    itemUrl:
+      selector: article a
+      attr: href
+    title:
+      selector: title
+    description:
+      selector: meta[name='description']
+      attr: content
+    published:
+      selector: meta[name='parsely-pub-date']
+      attr: content
+      layout: 2006-01-02T15:04:05Z07:00

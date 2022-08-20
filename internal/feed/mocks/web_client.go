@@ -4,7 +4,6 @@ package mocks
 
 import (
 	context "context"
-
 	io "io"
 
 	mock "github.com/stretchr/testify/mock"
@@ -48,7 +47,7 @@ func NewWebClient(t mockConstructorTestingTNewWebClient) *WebClient {
 	mock := &WebClient{}
 	mock.Mock.Test(t)
 
-	//t.Cleanup(func() { mock.AssertExpectations(t) })
+	t.Cleanup(func() { mock.AssertExpectations(t) })
 
 	return mock
 }

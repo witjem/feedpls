@@ -1,0 +1,37 @@
+---
+- id: first
+  title: 'first title'
+  description: 'first description'
+  url: 'https://first.example.com'
+  matchers:
+    itemUrl:
+      selector: main a
+      attr: href
+    title:
+      selector: meta[property='og:title']
+      attr: content
+    description:
+      selector: meta[property='twitter:description']
+      attr: content
+    published:
+      selector: meta[property='article:published_time']
+      attr: content
+      layout: '2021:01:01T23:23:00'
+- id: second
+  title: 'second title'
+  description: 'second description'
+  url: 'https://second.example.com'
+  matchers:
+    itemUrl:
+      selector: body main a
+      attr: href
+    title:
+      selector: meta[property='og:title']
+      attr: content
+    description:
+      selector: meta[property='twitter:description']
+      attr: content
+    published:
+      selector: meta[property='article:published_time']
+      attr: content
+      layout: '2021:01:01T23:23:00'

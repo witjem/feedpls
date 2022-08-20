@@ -1,0 +1,14 @@
+services:
+  feedpls:
+    image: witjem/feedpls:main
+    container_name: feedpls
+    hostname: feedpls
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./feeds.yml:/feeds.yml
+    environment:
+      - APP_PORT=8080
+      - APP_SECRET=1234
+      - APP_FEEDS=/feeds.yml
+      - APP_TTL=1m0s

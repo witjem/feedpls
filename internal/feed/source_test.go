@@ -3,15 +3,14 @@ package feed_test
 import (
 	"context"
 	"io"
-	"net/url"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/witjem/newsfeedplease/pkg/feed"
-	"github.com/witjem/newsfeedplease/pkg/feed/mocks"
+	"github.com/witjem/newsfeedplease/internal/feed"
+	"github.com/witjem/newsfeedplease/internal/feed/mocks"
 )
 
 func TestFetchFeed(t *testing.T) {
@@ -25,13 +24,13 @@ func TestFetchFeed(t *testing.T) {
 	webClient.On("Get", ctx, "https://blog-news.example/post-02").
 		Return(file(t, "testdata/post-02.html"), nil)
 
-	source := feed.NewSource(feed.Config{
-		ID:          "news",
+	source := feed.NewSource(feed.SourceConfig{
+		FeedID:      "news",
 		Title:       "Title",
 		Description: "Description",
-		SourceURL:   toURL(t, "https://blog-news.example"),
+		URL:         "https://blog-news.example",
 		Matchers: feed.Matchers{
-			Page: feed.Matcher{
+			ItemURL: feed.Matcher{
 				Selector: "main .posts a",
 				Attr:     "href",
 			},
@@ -51,7 +50,6 @@ func TestFetchFeed(t *testing.T) {
 				Layout: "2006-01-02T15:04:05.000Z",
 			},
 		},
-		PostProcessors: nil,
 	}, webClient)
 
 	actualFeed, err := source.Fetch(ctx)
@@ -78,14 +76,6 @@ func TestFetchFeed(t *testing.T) {
 		},
 	}, actualFeed)
 
-}
-
-func toURL(t *testing.T, rawURL string) *url.URL {
-	t.Helper()
-	res, err := url.Parse(rawURL)
-	assert.NoError(t, err)
-
-	return res
 }
 
 func file(t *testing.T, path string) io.ReadCloser {
