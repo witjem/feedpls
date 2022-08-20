@@ -63,7 +63,7 @@ func main() {
 			&cli.PathFlag{
 				Name:        "feeds",
 				EnvVars:     []string{"APP_FEEDS"},
-				Value:       "./feeds.yaml",
+				Value:       "./feeds.yml",
 				Usage:       "yaml file with describes feeds matching",
 				Destination: &cfg.FeedsCfgFilePath,
 			},

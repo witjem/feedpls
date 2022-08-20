@@ -78,7 +78,7 @@ curl -X GET --location "https://<host>/atom/<feed-id>?secret=<access-key>"
 
 ## Application options
 ```
---feeds value   yaml file with describes feeds matching (default: "./feeds.yaml") [$APP_FEEDS]
+--feeds value   yaml file with describes feeds matching (default: "./feeds.yml") [$APP_FEEDS]
 --help, -h      show help (default: false)
 --port value    server port (default: "8080") [$APP_PORT]
 --secret value  api secret (default: "secret") [$APP_SECRET]
