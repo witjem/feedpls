@@ -5,9 +5,10 @@ package feed
 import (
 	"context"
 	"io"
-	"log"
 	"net/url"
 	"strings"
+
+	log "github.com/go-pkgz/lgr"
 
 	"github.com/pkg/errors"
 
@@ -74,8 +75,7 @@ func (s *Source) Fetch(ctx context.Context) (Feed, error) {
 	for _, link := range links {
 		item, err := s.getItem(ctx, link)
 		if err != nil {
-			log.Printf("[WARN] skip page [%s] from source [%s], err: [%s]", link, s.URL, err)
-
+			log.Printf("[WARN] skip page %s from source %s, %v", link, s.URL, err)
 			continue
 		}
 
