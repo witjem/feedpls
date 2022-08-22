@@ -4,15 +4,13 @@ package feed
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/url"
 	"strings"
 
-	log "github.com/go-pkgz/lgr"
-
-	"github.com/pkg/errors"
-
 	"github.com/PuerkitoBio/goquery"
+	log "github.com/go-pkgz/lgr"
 )
 
 // SourceConfig describe base feed data and how gets items data.
@@ -51,31 +49,31 @@ func NewSource(cfg SourceConfig, webClient WebClient) *Source {
 	}
 }
 
-// Fetch trying fetch Feed from source.
-func (s *Source) Fetch(ctx context.Context) (Feed, error) {
+// Get trying get Feed from source.
+func (s *Source) Get(ctx context.Context) (Feed, error) {
 	content, err := s.webClient.Get(ctx, s.URL)
 	if err != nil {
-		return Feed{}, errors.Wrap(err, "failed to get main page content")
+		return Feed{}, fmt.Errorf("get feed content: %w", err)
 	}
 
 	defer content.Close()
 
 	doc, err := goquery.NewDocumentFromReader(content)
 	if err != nil {
-		return Feed{}, errors.Wrap(err, "failed to parse main page content")
+		return Feed{}, fmt.Errorf("parse content: %w", err)
 	}
 
 	matchers := s.Matchers
 	links, err := matchers.ItemURL.FindAll(doc)
 	if err != nil {
-		return Feed{}, errors.Wrap(err, "failed to find links from main page")
+		return Feed{}, fmt.Errorf("find items urls: %w", err)
 	}
 
 	items := make([]Item, 0, len(links))
 	for _, link := range links {
 		item, err := s.getItem(ctx, link)
 		if err != nil {
-			log.Printf("[WARN] skip page %s from source %s, %v", link, s.URL, err)
+			log.Printf("[WARN] skip item %s from feed %s: %v", link, s.FeedID, err)
 			continue
 		}
 
@@ -96,35 +94,35 @@ func (s *Source) Fetch(ctx context.Context) (Feed, error) {
 func (s *Source) getItem(ctx context.Context, link string) (Item, error) {
 	itemURL, err := s.toItemURL(link)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed fetch item")
+		return Item{}, fmt.Errorf("validate item url: %w", err)
 	}
 
 	newsContent, err := s.webClient.Get(ctx, itemURL)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed get item content")
+		return Item{}, fmt.Errorf("get item content: %w", err)
 	}
 
 	defer newsContent.Close()
 
 	newsDoc, err := goquery.NewDocumentFromReader(newsContent)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed to parse item content")
+		return Item{}, fmt.Errorf("parse item content: %w", err)
 	}
 
 	matchers := s.Matchers
 	title, err := matchers.Title.Find(newsDoc)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed to get item title")
+		return Item{}, fmt.Errorf("find item title: %w", err)
 	}
 
 	description, err := matchers.Description.Find(newsDoc)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed to get item description")
+		return Item{}, fmt.Errorf("find item description: %w", err)
 	}
 
 	published, err := matchers.Published.FindTime(newsDoc)
 	if err != nil {
-		return Item{}, errors.Wrap(err, "failed to get item published time")
+		return Item{}, fmt.Errorf("find item published time: %w", err)
 	}
 
 	return Item{

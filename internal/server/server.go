@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	log "github.com/go-pkgz/lgr"
 	"github.com/go-pkgz/rest"
-	"github.com/pkg/errors"
 
 	"github.com/witjem/newsfeedplease/internal/feed"
 )
@@ -35,7 +34,7 @@ type Server struct {
 func NewServer(cfg Config) (*Server, error) {
 	feeds, err := feed.NewFeedsFromYaml(cfg.FeedsCfgFilePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed create server")
+		return nil, fmt.Errorf("create server: %w", err)
 	}
 
 	feedCache := NewFeedsCache(feeds, feeds.Size(), cfg.CacheTTL)

@@ -52,7 +52,7 @@ func TestFetchFeed(t *testing.T) {
 		},
 	}, webClient)
 
-	actualFeed, err := source.Fetch(ctx)
+	actualFeed, err := source.Get(ctx)
 	assert.NoError(t, err)
 
 	assert.Equal(t, feed.Feed{

@@ -1,10 +1,10 @@
 package feed
 
 import (
+	"errors"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
 	"golang.org/x/net/html"
 )
 

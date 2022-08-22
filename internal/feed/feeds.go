@@ -2,11 +2,11 @@ package feed
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 
 	"github.com/witjem/newsfeedplease/internal/httpget"
@@ -35,13 +35,13 @@ type FeedsConfig []SourceConfig
 func ReadFeedsConfigs(filename string) (FeedsConfig, error) {
 	yamlFile, err := os.ReadFile(filename)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed read yaml ["+filename+"]")
+		return nil, fmt.Errorf("find config file: %w", err)
 	}
 
 	cfg := FeedsConfig{}
 	err = yaml.Unmarshal(yamlFile, &cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed unmarshal yaml ["+filename+"]")
+		return nil, fmt.Errorf("parse config file: %w", err)
 	}
 
 	return cfg, nil
@@ -56,7 +56,7 @@ type Feeds struct {
 func NewFeedsFromYaml(filename string) (*Feeds, error) {
 	configs, err := ReadFeedsConfigs(filename)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed create Feeds from yaml")
+		return nil, fmt.Errorf("new feeds from yaml: %v", err)
 	}
 
 	return NewFeeds(configs), nil
@@ -79,9 +79,9 @@ func (s *Feeds) Get(ctx context.Context, feedID string) (Feed, error) {
 		return Feed{}, ErrFeedNotFound
 	}
 
-	res, err := source.Fetch(ctx)
+	res, err := source.Get(ctx)
 	if err != nil {
-		return Feed{}, errors.Wrap(err, fmt.Sprintf("failed fetch feed %s", feedID))
+		return Feed{}, fmt.Errorf("get feed by id %s: %v", feedID, err)
 	}
 
 	return res, nil
