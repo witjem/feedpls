@@ -26,7 +26,7 @@ Example `feeds.yaml`
     # The Title value is retrieved from the Item page.
     title:
       selector: "main .c-body-title h1"
-      attr: ''
+      attr: ""
 
     # Defines how to find item description.
     # The Description value is retrieved from the Item page.
