@@ -16,6 +16,8 @@ func renderAtom(w http.ResponseWriter, f feed.Feed) {
 	if err != nil {
 		log.Printf("[ERROR] render feed to Atom, %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -28,6 +30,8 @@ func renderRSS(w http.ResponseWriter, f feed.Feed) {
 	if err != nil {
 		log.Printf("[ERROR] render feed to RSS, %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
