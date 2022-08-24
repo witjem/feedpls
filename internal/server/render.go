@@ -10,7 +10,7 @@ import (
 )
 
 func renderAtom(w http.ResponseWriter, f feed.Feed) {
-	w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
+	w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
 
 	err := toGFeed(f).WriteAtom(w)
 	if err != nil {
@@ -24,7 +24,7 @@ func renderAtom(w http.ResponseWriter, f feed.Feed) {
 }
 
 func renderRSS(w http.ResponseWriter, f feed.Feed) {
-	w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
+	w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
 
 	err := toGFeed(f).WriteRss(w)
 	if err != nil {

@@ -3,16 +3,15 @@ name: tests
 on:
   push:
     branches:
+      - main
     tags:
-    paths:
-      - ".github/workflows/tests.yml"
-      - "!examples/"
-      - "!**.md"
+    paths-ignore:
+      - "**.md"
   pull_request:
-    paths:
-      - ".github/workflows/tests.yml"
-      - "!examples/"
+    paths-ignore:
       - "!**.md"
+  schedule:
+    - cron: "0 0 * * *"
 jobs:
   test-backend:
     runs-on: ubuntu-latest
@@ -38,3 +37,9 @@ jobs:
         run: |
           go test -race -timeout=60s ./...
           $GITHUB_WORKSPACE/golangci-lint --config ${GITHUB_WORKSPACE}/.golangci.yml run --out-format=github-actions ./...
+
+      - name: end-to-end testing
+        run: |
+          curl -LO https://github.com/Orange-OpenSource/hurl/releases/download/1.4.0/hurl_1.4.0_amd64.deb
+          sudo dpkg -i hurl_1.4.0_amd64.deb
+          test/run.sh
