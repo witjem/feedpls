@@ -28,7 +28,7 @@ type Config struct {
 // Server implement http api for gets RSS/Atom feeds.
 type Server struct {
 	Config
-	feeds Feeds
+	feeds *FeedsCache
 }
 
 func NewServer(cfg Config) (*Server, error) {
@@ -37,23 +37,17 @@ func NewServer(cfg Config) (*Server, error) {
 		return nil, fmt.Errorf("create server: %w", err)
 	}
 
-	feedCache := NewFeedsCache(feeds, feeds.Size(), cfg.CacheTTL)
-
 	return &Server{
 		Config: cfg,
-		feeds:  feedCache,
+		feeds:  NewFeedsCache(feeds, cfg.CacheTTL),
 	}, nil
-}
-
-// Feeds interface for gets actual feed.
-type Feeds interface {
-	Get(ctx context.Context, feed string) (feed.Feed, error)
 }
 
 // Run starts http server and closes on context cancellation.
 func (s *Server) Run(ctx context.Context) error {
-	log.Printf("[INFO] start http server on %d", s.Listen)
+	s.feeds.Run(ctx)
 
+	log.Printf("[INFO] start http server on %d", s.Listen)
 	httpServer := &http.Server{
 		Addr:              fmt.Sprintf(":%d", s.Listen),
 		Handler:           s.router(),
@@ -101,7 +95,7 @@ func (s *Server) getRssFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := s.feeds.Get(r.Context(), feedID)
+	res, err := s.feeds.Get(feedID)
 	if err != nil {
 		http.NotFound(w, r)
 
@@ -122,7 +116,7 @@ func (s *Server) getAtomFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := s.feeds.Get(r.Context(), feedID)
+	res, err := s.feeds.Get(feedID)
 	if err != nil {
 		http.NotFound(w, r)
 

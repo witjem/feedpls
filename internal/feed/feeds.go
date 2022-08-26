@@ -87,7 +87,14 @@ func (s *Feeds) Get(ctx context.Context, feedID string) (Feed, error) {
 	return res, nil
 }
 
-// Size the number of registrants feed sources.
-func (s *Feeds) Size() int {
-	return len(s.sources)
+// IDs all registered feeds ids.
+func (s *Feeds) IDs() []string {
+	ids := make([]string, len(s.sources))
+	i := 0
+	for k := range s.sources {
+		ids[i] = k
+		i++
+	}
+
+	return ids
 }
