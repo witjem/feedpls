@@ -11,9 +11,16 @@ docker: ## build multi-platforms and push docker image
 	docker buildx build --platform=$(platform) --push --tag=witjem/feedpls:main --progress=plain .
 .PHONY: docker
 
-tests: ## run tests
+tests: ## run go tests
 	go test ./...
 .PHONY: tests
+
+tests-e2e: ## run end-to-end  tests
+	./test/run.sh
+.PHONY: tests-e2e
+
+tests-all: tests tests-e2e ## run end-to-end tests
+.PHONY: tests-all
 
 lint: ## check by golangci-lint linters
 	golangci-lint run
