@@ -13,7 +13,7 @@ import (
 	log "github.com/go-pkgz/lgr"
 	"github.com/go-pkgz/rest"
 
-	"github.com/witjem/newsfeedplease/internal/feed"
+	"github.com/witjem/feedpls/internal/feed"
 )
 
 // Config the server configuration.

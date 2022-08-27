@@ -7,7 +7,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/witjem/newsfeedplease/internal/feed"
+	"github.com/witjem/feedpls/internal/feed"
 )
 
 func TestMatcherFindDataFromHTMLTag(t *testing.T) {

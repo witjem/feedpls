@@ -12,7 +12,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/witjem/newsfeedplease/internal/server"
+	"github.com/witjem/feedpls/internal/server"
 )
 
 var revision string

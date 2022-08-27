@@ -9,7 +9,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/witjem/newsfeedplease/internal/httpget"
+	"github.com/witjem/feedpls/internal/httpget"
 )
 
 var ErrFeedNotFound = errors.New("feed not found")

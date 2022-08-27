@@ -7,7 +7,7 @@ import (
 	"github.com/bluele/gcache"
 	"github.com/go-pkgz/lgr"
 
-	"github.com/witjem/newsfeedplease/internal/feed"
+	"github.com/witjem/feedpls/internal/feed"
 )
 
 // FeedsRepo interface for gets the latest up-to-date feeds.

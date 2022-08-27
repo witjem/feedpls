@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/witjem/newsfeedplease/internal/feed"
+	"github.com/witjem/feedpls/internal/feed"
 )
 
 func TestCreateFeedsFromYaml(t *testing.T) {

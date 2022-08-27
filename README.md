@@ -2,7 +2,7 @@
 
 Feedpls is a simple web service to generate RSS/Atom for web page which does not have it.
 
-[![build](https://github.com/witjem/feedpls/actions/workflows/tests.yml/badge.svg)](https://github.com/witjem/feedpls/actions/workflows/tests.yml/badge.svg)
+[![Build Status](https://github.com/witjem/feedpls/actions/workflows/build/badge.svg)](https://github.com/witjem/feedpls/actions)
 [![Image Size](https://img.shields.io/docker/image-size/witjem/feedpls/main)](https://hub.docker.com/r/witjem/feedpls)
 ## Configuration
 

@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/witjem/newsfeedplease/internal/feed"
-	"github.com/witjem/newsfeedplease/internal/feed/mocks"
+	"github.com/witjem/feedpls/internal/feed"
+	"github.com/witjem/feedpls/internal/feed/mocks"
 )
 
 func TestFetchFeed(t *testing.T) {

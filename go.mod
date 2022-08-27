@@ -1,4 +1,4 @@
-module github.com/witjem/newsfeedplease
+module github.com/witjem/feedpls
 
 go 1.17
 
