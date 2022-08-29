@@ -1,6 +1,6 @@
 services:
   feedpls:
-    image: witjem/feedpls:main
+    image: witjem/feedpls:main # or ghcr.io/witjem/feedpls:main
     container_name: feedpls
     hostname: feedpls
     ports:

@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateFeedsFromYaml(t *testing.T) {
-	cfg, err := feed.ReadFeedsConfigs("./testdata/valid-feeds-config.yaml")
+	cfg, err := feed.ReadFeedsConfigs("./testdata/valid-feeds-config.yml")
 	assert.NoError(t, err)
 	expected := feed.FeedsConfig{
 		feed.SourceConfig{

@@ -6,7 +6,7 @@ Feedpls is a simple web service to generate RSS/Atom for web page which does not
 [![Image Size](https://img.shields.io/docker/image-size/witjem/feedpls/main)](https://hub.docker.com/r/witjem/feedpls)
 ## Configuration
 
-Example `feeds.yaml`
+Example `feeds.yml`
 
 ```yaml
 ---
@@ -53,17 +53,17 @@ Example `docker-compose.yml`
 ```yml
 services:
   feedpls:
-    image: witjem/feedpls:main
+    image: witjem/feedpls:main # or ghcr.io/witjem/feedpls:main
     container_name: feedpls
     hostname: feedpls
     ports:
       - "8080:8080"
     volumes:
-      - ./feeds.yaml:/feeds.yaml
+      - ./feeds.yml:/feeds.yml
     environment:
       - APP_PORT=8080
       - APP_SECRET=1234 # access-key
-      - APP_FEEDS=/feeds.yaml
+      - APP_FEEDS=/feeds.yml
       - APP_TTL=5m # feed cache time
 ```
 
