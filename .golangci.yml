@@ -21,11 +21,12 @@ linters-settings:
     line-length: 140
   gocritic:
     enabled-tags:
-      - performance
+      - diagnostic
       - style
+      - performance
       - experimental
+      - opinionated
     disabled-checks:
-      - wrapperFunc
       - hugeParam
       - rangeValCopy
 
