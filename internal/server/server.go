@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/didip/tollbooth/v7"
+	tollbooth "github.com/didip/tollbooth/v7"
 	"github.com/didip/tollbooth_chi"
-	"github.com/go-chi/chi/v5"
+	chi "github.com/go-chi/chi"
 	log "github.com/go-pkgz/lgr"
 	"github.com/go-pkgz/rest"
 
