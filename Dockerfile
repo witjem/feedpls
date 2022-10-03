@@ -1,11 +1,11 @@
 # Step 1: Modules caching
-FROM golang:1.17.1-alpine3.14 as modules
+FROM golang:1.19.1-alpine3.16 as modules
 COPY go.mod go.sum /modules/
 WORKDIR /modules
 RUN go mod download
 
 # Step 2: Builder
-FROM golang:1.17.1-alpine3.14 as builder
+FROM golang:1.19.1-alpine3.16 as builder
 
 ARG GIT_BRANCH
 ARG GITHUB_SHA
