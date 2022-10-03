@@ -4,6 +4,7 @@ Feedpls is a simple web service to generate RSS/Atom for web page which does not
 
 [![Build Status](https://github.com/witjem/feedpls/actions/workflows/ci.yml/badge.svg)](https://github.com/witjem/feedpls/actions)
 [![Image Size](https://img.shields.io/docker/image-size/witjem/feedpls/main)](https://hub.docker.com/r/witjem/feedpls)
+
 ## Configuration
 
 Example `feeds.yml`
@@ -68,6 +69,7 @@ services:
 ```
 
 ## Endpoints
+
 ```shell
 ## Get RSS feed
 curl -X GET --location "https://<host>/rss/<feed-id>?secret=<access-key>"
@@ -77,12 +79,15 @@ curl -X GET --location "https://<host>/atom/<feed-id>?secret=<access-key>"
 ```
 
 ## Application options
-```
+
+```shell
 --feeds value   yaml file with describes feeds matching (default: "./feeds.yml") [$APP_FEEDS]
 --help, -h      show help (default: false)
 --port value    server port (default: "8080") [$APP_PORT]
 --secret value  api secret (default: "secret") [$APP_SECRET]
 --ttl value     feed caching time (default: 5m0s) [$APP_TTL]
 ```
+
 ## Alternatives
+
 * [RSS Please](https://github.com/wezm/rsspls)
