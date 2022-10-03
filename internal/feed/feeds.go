@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/witjem/feedpls/internal/httpget"
 )

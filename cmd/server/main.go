@@ -9,8 +9,7 @@ import (
 	"time"
 
 	log "github.com/go-pkgz/lgr"
-
-	"github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v2"
 
 	"github.com/witjem/feedpls/internal/server"
 )
