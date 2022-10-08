@@ -2,16 +2,21 @@ package postprocessor
 
 import (
 	"context"
+	log "github.com/go-pkgz/lgr"
 	"github.com/witjem/feedpls/internal/feed"
-	"github.com/witjem/feedpls/internal/server"
+	"regexp"
 )
 
+type FeedsRepo interface {
+	Get(ctx context.Context, feedID string) (feed.Feed, error)
+	IDs() []string
+}
 type PostProcessor struct {
-	server.FeedsRepo
+	FeedsRepo
 	cfg feed.FeedsConfig
 }
 
-func NewPostProcessor(feeds server.FeedsRepo, cfg feed.FeedsConfig) *PostProcessor {
+func NewPostProcessor(feeds FeedsRepo, cfg feed.FeedsConfig) *PostProcessor {
 	return &PostProcessor{FeedsRepo: feeds, cfg: cfg}
 }
 
@@ -21,7 +26,7 @@ func (p *PostProcessor) Get(ctx context.Context, feedID string) (feed.Feed, erro
 		return res, err
 	}
 	p.TryToReplace(&res)
-	return feed.Feed{}, err
+	return res, err
 }
 
 // TryToReplace - make replace if replace postProcessor is declared in config
@@ -42,11 +47,16 @@ func (p *PostProcessor) ApplyReplace(postProcessors *[]feed.PostProcessor, feed 
 		if postProcessor.Replace.Field == "" {
 			continue
 		}
+		re, err := regexp.Compile(postProcessor.Replace.From)
+		if err != nil {
+			log.Printf("[ERROR] incorrect regexp expression, err: %v", err)
+			return
+		}
 		switch postProcessor.Replace.Field {
 		case "title":
-			feed.Title = postProcessor.Replace.To
+			feed.Title = re.ReplaceAllString(feed.Title, postProcessor.Replace.To)
 		case "description":
-			feed.Description = postProcessor.Replace.To
+			feed.Description = re.ReplaceAllString(feed.Description, postProcessor.Replace.To)
 		}
 	}
 }
