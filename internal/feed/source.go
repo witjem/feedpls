@@ -15,11 +15,12 @@ import (
 
 // SourceConfig describe base feed data and how gets items data.
 type SourceConfig struct {
-	FeedID      string   `yaml:"id"`
-	Title       string   `yaml:"title"`
-	Description string   `yaml:"description"`
-	URL         string   `yaml:"url"`
-	Matchers    Matchers `yaml:"matchers"`
+	FeedID         string          `yaml:"id"`
+	Title          string          `yaml:"title"`
+	Description    string          `yaml:"description"`
+	URL            string          `yaml:"url"`
+	Matchers       Matchers        `yaml:"matchers"`
+	PostProcessors []PostProcessor `yaml:"postprocessors"`
 }
 
 // Matchers description of how to find data for Item.
@@ -28,6 +29,16 @@ type Matchers struct {
 	Title       Matcher     `yaml:"title"`
 	Description Matcher     `yaml:"description"`
 	Published   TimeMatcher `yaml:"published"`
+}
+
+type PostProcessor struct {
+	Replace Replace `yaml:"replace"`
+}
+
+type Replace struct {
+	Field string `yaml:"field"` // can be: title, description
+	From  string `yaml:"from"`  // some_regex
+	To    string `yaml:"to"`
 }
 
 // WebClient interface for get content by URL.

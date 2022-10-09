@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"github.com/witjem/feedpls/internal/postprocessor"
 	"net/http"
 	"time"
 
@@ -37,9 +38,15 @@ func NewServer(cfg Config) (*Server, error) {
 		return nil, fmt.Errorf("create server: %w", err)
 	}
 
+	conf, err := feed.ReadFeedsConfigs(cfg.FeedsCfgFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("create server: %w", err)
+	}
+	pp := postprocessor.NewPostProcessor(feeds, conf)
+
 	return &Server{
 		Config: cfg,
-		feeds:  NewFeedsCache(feeds, cfg.CacheTTL),
+		feeds:  NewFeedsCache(pp, cfg.CacheTTL),
 	}, nil
 }
 
