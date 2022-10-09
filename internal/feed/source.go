@@ -34,6 +34,7 @@ type Matchers struct {
 type PostProcessor struct {
 	Replace Replace `yaml:"replace"`
 }
+
 type Replace struct {
 	Field string `yaml:"field"` // can be: title, description
 	From  string `yaml:"from"`  // some_regex

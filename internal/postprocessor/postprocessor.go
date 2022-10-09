@@ -11,6 +11,7 @@ type FeedsRepo interface {
 	Get(ctx context.Context, feedID string) (feed.Feed, error)
 	IDs() []string
 }
+
 type PostProcessor struct {
 	FeedsRepo
 	cfg feed.FeedsConfig
@@ -29,20 +30,20 @@ func (p *PostProcessor) Get(ctx context.Context, feedID string) (feed.Feed, erro
 	return res, err
 }
 
-// TryToReplace - make replace if replace postProcessor is declared in config
-func (p *PostProcessor) TryToReplace(feed *feed.Feed) {
+// TryToReplace - make replace if replace postProcessor is declared in config.
+func (p *PostProcessor) TryToReplace(feedData *feed.Feed) {
 	for _, config := range p.cfg {
-		if config.FeedID != feed.ID {
+		if config.FeedID != feedData.ID {
 			continue
 		}
 		if len(config.PostProcessors) == 0 {
 			continue
 		}
-		p.ApplyReplace(&config.PostProcessors, feed)
+		p.ApplyReplace(&config.PostProcessors, feedData)
 	}
 }
 
-func (p *PostProcessor) ApplyReplace(postProcessors *[]feed.PostProcessor, feed *feed.Feed) {
+func (p *PostProcessor) ApplyReplace(postProcessors *[]feed.PostProcessor, feedData *feed.Feed) {
 	for _, postProcessor := range *postProcessors {
 		if postProcessor.Replace.Field == "" {
 			continue
@@ -54,9 +55,9 @@ func (p *PostProcessor) ApplyReplace(postProcessors *[]feed.PostProcessor, feed 
 		}
 		switch postProcessor.Replace.Field {
 		case "title":
-			feed.Title = re.ReplaceAllString(feed.Title, postProcessor.Replace.To)
+			feedData.Title = re.ReplaceAllString(feedData.Title, postProcessor.Replace.To)
 		case "description":
-			feed.Description = re.ReplaceAllString(feed.Description, postProcessor.Replace.To)
+			feedData.Description = re.ReplaceAllString(feedData.Description, postProcessor.Replace.To)
 		}
 	}
 }

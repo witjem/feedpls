@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"github.com/witjem/feedpls/internal/postprocessor"
 	"time"
 
 	"github.com/bluele/gcache"
@@ -22,17 +21,15 @@ type FeedsCache struct {
 	gc     gcache.Cache
 	ticker *time.Ticker
 	feeds  FeedsRepo
-	pp     *postprocessor.PostProcessor
 }
 
 // NewFeedsCache creates FeedsCache.
 // ttl - duration how often will be refresh cache for gets up-to-date feeds.
-func NewFeedsCache(feeds FeedsRepo, ttl time.Duration, pp *postprocessor.PostProcessor) *FeedsCache {
+func NewFeedsCache(feeds FeedsRepo, ttl time.Duration) *FeedsCache {
 	return &FeedsCache{
 		gc:     gcache.New(len(feeds.IDs())).Build(),
 		ticker: time.NewTicker(ttl),
 		feeds:  feeds,
-		pp:     pp,
 	}
 }
 
@@ -44,7 +41,7 @@ func (f *FeedsCache) Run(ctx context.Context) {
 	loadFeedToCache := func(feedID string) {
 		lgr.Printf("[INFO] loading feed %s to cache", feedID)
 
-		newFeed, err := f.pp.Get(context.TODO(), feedID)
+		newFeed, err := f.feeds.Get(context.TODO(), feedID)
 		if err != nil {
 			lgr.Printf("[ERROR] load feed %s to cache: %v", feedID, err)
 		}

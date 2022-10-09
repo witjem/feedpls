@@ -46,7 +46,7 @@ func NewServer(cfg Config) (*Server, error) {
 
 	return &Server{
 		Config: cfg,
-		feeds:  NewFeedsCache(feeds, cfg.CacheTTL, pp),
+		feeds:  NewFeedsCache(pp, cfg.CacheTTL),
 	}, nil
 }
 
