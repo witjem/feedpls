@@ -54,7 +54,7 @@ Example `docker-compose.yml`
 ```yml
 services:
   feedpls:
-    image: witjem/feedpls:main # or ghcr.io/witjem/feedpls:main
+    image: witjem/feedpls:v0.1.1 # or ghcr.io/witjem/feedpls:v0.1.1
     container_name: feedpls
     hostname: feedpls
     ports:
