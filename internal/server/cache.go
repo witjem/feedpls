@@ -7,7 +7,7 @@ import (
 	"github.com/bluele/gcache"
 	"github.com/go-pkgz/lgr"
 
-	"github.com/witjem/feedpls/internal/feed"
+	"github.com/witjem/feedpls/internal/pkg/feed"
 )
 
 // FeedsRepo interface for gets the latest up-to-date feeds.
@@ -41,7 +41,7 @@ func (f *FeedsCache) Run(ctx context.Context) {
 	loadFeedToCache := func(feedID string) {
 		lgr.Printf("[INFO] loading feed %s to cache", feedID)
 
-		newFeed, err := f.feeds.Get(context.TODO(), feedID)
+		newFeed, err := f.feeds.Get(context.Background(), feedID)
 		if err != nil {
 			lgr.Printf("[ERROR] load feed %s to cache: %v", feedID, err)
 		}
