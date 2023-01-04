@@ -4,28 +4,28 @@
   description: Open Source Archives
   url: https://github.blog/category/open-source/
   matchers:
+    engine: xpath # Engine for matching data by xpath.
     itemUrl:
-      selector: article a
-      attr: href
+      expr: //article//a/@href
     title:
-      selector: title
+      expr: //title
     description:
-      selector: meta[name='description']
-      attr: content
+      expr: //meta[@name='description']/@content
     published:
-      selector: meta[name='parsely-pub-date']
-      attr: content
+      expr: //meta[@name='parsely-pub-date']/@content
       layout: 2006-01-02T15:04:05Z07:00
-  postprocessors:
-    - replace:
+  functions: # Optional props. Functions to be applied to the matched data.
+    - replace: # Replace function which replaces the matched data with the given value.
         field: title
-        from: "GitHub"
-        to: "Test"
+        from: "git"
+        to: "Git"
+
 - id: github-blog-engineering
   title: The GitHub Blog | Engineering
   description: Engineering
   url: https://github.blog/category/engineering/
   matchers:
+    engine: goquery # Engine for matching data by jquery style.
     itemUrl:
       selector: article a
       attr: href
@@ -38,8 +38,8 @@
       selector: meta[name='parsely-pub-date']
       attr: content
       layout: 2006-01-02T15:04:05Z07:00
-  postprocessors:
+  functions:
     - replace:
-        field: title
-        from: "GitHub"
-        to: "Test"
+        field: description
+        from: "git"
+        to: "Git"

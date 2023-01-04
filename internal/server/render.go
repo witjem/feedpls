@@ -6,7 +6,7 @@ import (
 	log "github.com/go-pkgz/lgr"
 	gfeed "github.com/gorilla/feeds"
 
-	"github.com/witjem/feedpls/internal/feed"
+	"github.com/witjem/feedpls/internal/pkg/feed"
 )
 
 func renderAtom(w http.ResponseWriter, f feed.Feed) {

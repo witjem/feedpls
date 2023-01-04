@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
-	"github.com/witjem/feedpls/internal/postprocessor"
 	"net/http"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 	log "github.com/go-pkgz/lgr"
 	"github.com/go-pkgz/rest"
 
-	"github.com/witjem/feedpls/internal/feed"
+	"github.com/witjem/feedpls/internal/config"
 )
 
 // Config the server configuration.
@@ -33,20 +32,14 @@ type Server struct {
 }
 
 func NewServer(cfg Config) (*Server, error) {
-	feeds, err := feed.NewFeedsFromYaml(cfg.FeedsCfgFilePath)
+	feedSvc, err := config.NewFeedServiceFromYML(cfg.FeedsCfgFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("create server: %w", err)
 	}
-
-	conf, err := feed.ReadFeedsConfigs(cfg.FeedsCfgFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("create server: %w", err)
-	}
-	pp := postprocessor.NewPostProcessor(feeds, conf)
 
 	return &Server{
 		Config: cfg,
-		feeds:  NewFeedsCache(pp, cfg.CacheTTL),
+		feeds:  NewFeedsCache(feedSvc, cfg.CacheTTL),
 	}, nil
 }
 
