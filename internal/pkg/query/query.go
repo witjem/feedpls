@@ -17,9 +17,11 @@ const (
 	XPath   Engine = "xpath"
 )
 
-var DoesNotSupportErr = errors.New("engine does not support")
-var CouldNotFindElemErr = errors.New("could not find element in content by selector")
-var TimeLayoutIsEmptyErr = errors.New("time layout props is empty")
+var (
+	ErrEngineNotFound    = errors.New("engine not found")
+	ErrCouldNotFindElem  = errors.New("could not find element in content by selector")
+	ErrTimeLayoutIsEmpty = errors.New("time layout props is empty")
+)
 
 type Selector struct {
 	Expr string
@@ -52,7 +54,7 @@ func NewDocument(engine Engine, root *html.Node) (*Document, error) {
 			return doc.Find(selector.Expr).Nodes
 		}
 	default:
-		return nil, DoesNotSupportErr
+		return nil, ErrEngineNotFound
 	}
 
 	return &Document{queryFunc: f, root: root}, nil
@@ -95,7 +97,7 @@ func (d *Document) FindOne(selector Selector) (string, error) {
 	}
 
 	if len(res) < 1 {
-		return "", CouldNotFindElemErr
+		return "", ErrCouldNotFindElem
 	}
 
 	if len(res) > 1 {
@@ -107,7 +109,7 @@ func (d *Document) FindOne(selector Selector) (string, error) {
 
 func (d *Document) FindTime(timeSelector SelectorTime) (time.Time, error) {
 	if timeSelector.Layout == "" {
-		return time.Time{}, TimeLayoutIsEmptyErr
+		return time.Time{}, ErrTimeLayoutIsEmpty
 	}
 
 	res, err := d.FindOne(timeSelector.Selector)

@@ -14,7 +14,7 @@ const (
 	FieldDescription = "description"
 )
 
-func Replace(field Field, from string, to string) feed.MiddlewareFunc {
+func Replace(field Field, from, to string) feed.MiddlewareFunc {
 	return func(ctx context.Context, f feed.Feed) (feed.Feed, error) {
 		for i := range f.Items {
 			if field == FieldTitle {

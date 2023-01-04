@@ -14,7 +14,7 @@ import (
 	"github.com/witjem/feedpls/internal/pkg/query"
 )
 
-var IDNotFoundErr = errors.New("feed by id not found")
+var ErrIDNotFound = errors.New("feed by id not found")
 
 type Config struct {
 	FeedID      string
@@ -88,7 +88,7 @@ func NewRepository(configs []Config, client HTTPClient) *Repository {
 func (r *Repository) Get(ctx context.Context, feedID string) (Feed, error) {
 	cfg, ok := r.cfg[feedID]
 	if !ok {
-		return Feed{}, IDNotFoundErr
+		return Feed{}, ErrIDNotFound
 	}
 
 	content, err := r.httpClient.Get(ctx, cfg.URL)
@@ -160,7 +160,7 @@ func (r *Repository) getItem(ctx context.Context, matcher Matcher, itemURL strin
 }
 
 func (r *Repository) IDs() []string {
-	var res []string
+	res := make([]string, len(r.cfg))
 	for id := range r.cfg {
 		res = append(res, id)
 	}
