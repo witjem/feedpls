@@ -11,15 +11,56 @@ Example `feeds.yml`
 
 ```yaml
 ---
-- id: "" # Feed identifier.
+# Define config with `XPath` parser engine. 
+- id: "news-first" # Feed identifier.
   title: "" # The title in the feed.
   description: "" # The description in the feed.
   url: "" # The URL of the web page to generate the feed from.
-  
+
   matchers:
+    engine: "xpath"
+    
+    # Defines how to find items URLs.
+    itemUrl:
+      expr: "//main//a/@href" # XPath expression.
+
+    # Defines how to find item title. 
+    # The Title value is retrieved from the Item page.
+    title:
+      expr: "//title"
+
+    # Defines how to find item description.
+    # The Description value is retrieved from the Item page.
+    description:
+      expr: "//meta[@name='twitter:description']/@content"
+
+    # Defines how to find item published time.
+    # The Published value is retrieved from the Item page.
+    published:
+      expr: "//meta[@name='article:published_time']/@content"
+
+      # Standard golang layout for parsing time. 
+      # Examples: https://pkg.go.dev/time#pkg-constants
+      layout: "2006-01-02T15:04:05Z07:00"
+
+  # Optional property. Functions to be applied to the matched data after parsing.
+  # For example if after parse you want to replace (or remove) some text to another.
+  functions: 
+    - replace: # Replace function which replaces the matched data with the given value.
+        field: "title" # Defines which property to apply to. Can be 'title' or 'description'
+        from: " -- ABC News" # Defines what text want to replace. 
+        to: "" # Defines what text want to replace to. 
+  
+# Define config with `GoQuery` (JQuery like) parser engine. 
+- id: "news-second" # Feed identifier.
+  title: "" # The title in the feed.
+  description: "" # The description in the feed.
+  url: "" # The URL of the web page to generate the feed from.
+  matchers:
+    engine: "goquery"
   
     # Defines how to find items URLs.
-    itemUrl: 
+    itemUrl:
       selector: "main a" # A CSS selector.
       attr: "href" # Optional. HTML attribute name. Use it to get content from attribute.
 
@@ -40,11 +81,10 @@ Example `feeds.yml`
     published:
       selector: "meta[name='article:published_time']"
       attr: "content"
-      
+
       # Standard golang layout for parsing time. 
       # Examples: https://pkg.go.dev/time#pkg-constants
       layout: "2006-01-02T15:04:05Z07:00" 
-
 ```
 
 ## Run
@@ -54,7 +94,7 @@ Example `docker-compose.yml`
 ```yml
 services:
   feedpls:
-    image: witjem/feedpls:v0.1.1 # or ghcr.io/witjem/feedpls:v0.1.1
+    image: witjem/feedpls:v0.2.0 # or ghcr.io/witjem/feedpls:v0.2.0
     container_name: feedpls
     hostname: feedpls
     ports:

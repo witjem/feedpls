@@ -6,51 +6,46 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	feed2 "github.com/witjem/feedpls/internal/pkg/feed"
+	"github.com/witjem/feedpls/internal/pkg/feed"
 	"github.com/witjem/feedpls/internal/pkg/funcs"
 	"github.com/witjem/feedpls/internal/pkg/httpget"
 )
 
-func NewFeedServiceFromYML(cfgPath string) (*feed2.Service, error) {
+// NewFeedServiceFromYML creates a new feed service from a YAML config file.
+func NewFeedServiceFromYML(cfgPath string) (*feed.Service, error) {
 	feedConfigs, err := ReadFeedsConfigFromYaml(cfgPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
-	configs := make([]feed2.Config, len(feedConfigs))
-	var middlewares []feed2.Middleware
+	configs := make([]feed.Config, len(feedConfigs))
+	var middlewares []feed.Middleware
 	for i, f := range feedConfigs {
-		feedCfg := f.toQueryFeedConfig()
-
-		err = feedCfg.Validate()
-		if err != nil {
-			return nil, fmt.Errorf("does not valid config for feed %s: %v", f.FeedID, err)
-		}
-
-		configs[i] = feedCfg
+		configs[i] = f.toQueryFeedConfig()
 		middlewares = append(middlewares, toMiddlewares(f.Functions)...)
 	}
 
-	return feed2.NewService(configs, httpget.New(), middlewares), nil
+	return feed.NewService(configs, httpget.New(), middlewares), nil
 }
 
+// ReadFeedsConfigFromYaml reads a YAML config file and returns a slice of FeedConfig.
 func ReadFeedsConfigFromYaml(cfgPath string) (FeedsConfig, error) {
 	bytes, err := os.ReadFile(cfgPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	feedConfigs := FeedsConfig{}
 	err = yaml.Unmarshal(bytes, &feedConfigs)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal config file: %w", err)
 	}
 
 	return feedConfigs, nil
 }
 
-func toMiddlewares(functions []Function) []feed2.Middleware {
-	var res []feed2.Middleware
+func toMiddlewares(functions []Function) []feed.Middleware {
+	var res []feed.Middleware
 	for _, function := range functions {
 		if function.Replace != nil {
 			replaceFunc := function.Replace
