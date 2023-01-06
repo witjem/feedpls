@@ -94,7 +94,7 @@ Example `docker-compose.yml`
 ```yml
 services:
   feedpls:
-    image: witjem/feedpls:v0.2.0 # or ghcr.io/witjem/feedpls:v0.2.0
+    image: witjem/feedpls:v0.2.1 # or ghcr.io/witjem/feedpls:v0.2.1
     container_name: feedpls
     hostname: feedpls
     ports:
