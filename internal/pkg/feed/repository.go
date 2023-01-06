@@ -58,12 +58,9 @@ func (m Matcher) FindItem(doc *query.Document) (Item, error) {
 	return res, nil
 }
 
-func (c Config) Validate() error {
-	// todo
-	return nil
-}
-
 // HTTPClient interface for get content by URL.
+//
+//go:generate moq -out httpclient_mock_test.go -pkg feed_test . HTTPClient
 type HTTPClient interface {
 	Get(ctx context.Context, url string) (io.ReadCloser, error)
 }
@@ -156,7 +153,14 @@ func (r *Repository) getItem(ctx context.Context, matcher Matcher, itemURL strin
 		return Item{}, fmt.Errorf("get item content: %w", err)
 	}
 
-	return matcher.FindItem(doc)
+	res, err := matcher.FindItem(doc)
+	if err != nil {
+		return Item{}, err
+	}
+
+	res.Link = itemURL
+
+	return res, nil
 }
 
 func (r *Repository) IDs() []string {
