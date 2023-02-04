@@ -104,12 +104,14 @@ func TestGetFeed(t *testing.T) {
 		Description: "The world and galactic good news",
 		Items: []feed.Item{
 			{
+				ID:          "0de18674dc5af778dfb143a085fc3fb6", // md5 hash of the link
 				Title:       "What is the best way to learn Go?",
 				Link:        "https://goodnews.com/posts/what_is_the_best_way_to_learn_go",
 				Description: "Go is a great language. It is simple, fast, and has a large ecosystem",
 				Published:   time.Date(2021, 12, 22, 12, 30, 0, 0, time.UTC),
 			},
 			{
+				ID:          "ff076c38e8bccb71747a2cc39fe7ecfd", // md5 hash of the link
 				Title:       "The special way for us",
 				Link:        "https://goodnews.com/posts/special_way_for_us",
 				Description: "It is a special way for us",

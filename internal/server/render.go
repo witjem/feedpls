@@ -47,6 +47,7 @@ func toGFeed(f feed.Feed) *gfeed.Feed {
 
 	for _, item := range f.Items {
 		res.Items = append(res.Items, &gfeed.Item{
+			Id:          item.ID,
 			Title:       item.Title,
 			Link:        &gfeed.Link{Href: item.Link},
 			Description: item.Description,

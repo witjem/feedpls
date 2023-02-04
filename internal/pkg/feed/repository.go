@@ -2,6 +2,7 @@ package feed
 
 import (
 	"context"
+	"crypto/md5" //nolint:gosec // not for security. Use for create item id,
 	"errors"
 	"fmt"
 	"io"
@@ -159,6 +160,7 @@ func (r *Repository) getItem(ctx context.Context, matcher Matcher, itemURL strin
 	}
 
 	res.Link = itemURL
+	res.ID = fmt.Sprintf("%x", md5.Sum([]byte(itemURL))) //nolint:gosec // not a security issue
 
 	return res, nil
 }

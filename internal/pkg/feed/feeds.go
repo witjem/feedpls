@@ -14,6 +14,7 @@ type Feed struct {
 }
 
 type Item struct {
+	ID          string
 	Title       string
 	Link        string
 	Description string
