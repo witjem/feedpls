@@ -42,7 +42,8 @@ Example `feeds.yml`
       # Standard golang layout for parsing time. 
       # Examples: https://pkg.go.dev/time#pkg-constants
       layout: "2006-01-02T15:04:05Z07:00"
-
+      tz: "Europe/Kyiv" # Optional, default value UTC
+      
   # Optional property. Functions to be applied to the matched data after parsing.
   # For example if after parse you want to replace (or remove) some text to another.
   functions: 
@@ -84,7 +85,8 @@ Example `feeds.yml`
 
       # Standard golang layout for parsing time. 
       # Examples: https://pkg.go.dev/time#pkg-constants
-      layout: "2006-01-02T15:04:05Z07:00" 
+      layout: "2006-01-02T15:04:05Z07:00"
+      tz: "Europe/Kyiv" # Optional, default value UTC
 ```
 
 ## Run

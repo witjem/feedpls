@@ -76,6 +76,7 @@ func TestGetFeed(t *testing.T) {
 						Expr: "//meta[@name='parsely-pub-date']/@content",
 					},
 					Layout: "2006-01-02T15:04:05Z",
+					TZ:     time.UTC,
 				},
 			},
 		},

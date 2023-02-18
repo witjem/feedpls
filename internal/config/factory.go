@@ -21,7 +21,11 @@ func NewFeedServiceFromYML(cfgPath string) (*feed.Service, error) {
 	configs := make([]feed.Config, len(feedConfigs))
 	var middlewares []feed.Middleware
 	for i, f := range feedConfigs {
-		configs[i] = f.toQueryFeedConfig()
+		configs[i], err = f.toQueryFeedConfig()
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse config file: %w", err)
+		}
+
 		middlewares = append(middlewares, toMiddlewares(f.Functions)...)
 	}
 

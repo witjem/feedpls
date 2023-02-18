@@ -3,6 +3,7 @@ package query_test
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/html"
@@ -16,6 +17,7 @@ var htmlPage = `
 <head>	
 	<meta data-react-helmet="true" name="twitter:description" content="Good news for world"/>
 	<meta data-react-helmet="true" name="twitter:title" content="Good news"/>
+	<meta name="content-date" content="January 2, 2022, 3:04 pm"/>
 	<title>Good news</title>
 </head>
 `
@@ -47,17 +49,30 @@ func TestXPath(t *testing.T) {
 	t.Run("should get list contents by tags", func(t *testing.T) {
 		content, err := doc.Find(query.Selector{Expr: "//meta/@name"})
 		assert.NoError(t, err)
-		assert.Equal(t, []string{"twitter:description", "twitter:title"}, content)
+		assert.Equal(t, []string{"twitter:description", "twitter:title", "content-date"}, content)
 
 		content, err = doc.Find(query.Selector{Expr: "//meta", Attr: "name"})
 		assert.NoError(t, err)
-		assert.Equal(t, []string{"twitter:description", "twitter:title"}, content)
+		assert.Equal(t, []string{"twitter:description", "twitter:title", "content-date"}, content)
 	})
 
 	t.Run("should get empty list if content by tags not found", func(t *testing.T) {
 		content, err := doc.Find(query.Selector{Expr: "//a"})
 		assert.NoError(t, err)
 		assert.Empty(t, content)
+	})
+
+	t.Run("should parse time with timezone", func(t *testing.T) {
+		timeLocation := time.FixedZone("UTC+3", 3*60*60)
+
+		actual, err := doc.FindTime(
+			query.SelectorTime{
+				Selector: query.Selector{Expr: "//meta[@name='content-date']/@content"},
+				Layout:   "January 2, 2006, 3:04 pm",
+				TZ:       timeLocation,
+			})
+		assert.NoError(t, err)
+		assert.Equal(t, time.Date(2022, 1, 2, 15, 4, 0, 0, timeLocation), actual)
 	})
 }
 
@@ -84,12 +99,25 @@ func TestGoQuery(t *testing.T) {
 	t.Run("should get list contents by tags", func(t *testing.T) {
 		content, err := doc.Find(query.Selector{Expr: "meta", Attr: "name"})
 		assert.NoError(t, err)
-		assert.Equal(t, []string{"twitter:description", "twitter:title"}, content)
+		assert.Equal(t, []string{"twitter:description", "twitter:title", "content-date"}, content)
 	})
 
 	t.Run("should get empty list if content by tags not found", func(t *testing.T) {
 		content, err := doc.Find(query.Selector{Expr: "a"})
 		assert.NoError(t, err)
 		assert.Empty(t, content)
+	})
+
+	t.Run("should parse time with timezone", func(t *testing.T) {
+		timeLocation := time.FixedZone("UTC+3", 3*60*60)
+
+		actual, err := doc.FindTime(
+			query.SelectorTime{
+				Selector: query.Selector{Expr: "meta[name='content-date']", Attr: "content"},
+				Layout:   "January 2, 2006, 3:04 pm",
+				TZ:       timeLocation,
+			})
+		assert.NoError(t, err)
+		assert.Equal(t, time.Date(2022, 1, 2, 15, 4, 0, 0, timeLocation), actual)
 	})
 }

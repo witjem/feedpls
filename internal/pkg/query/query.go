@@ -31,6 +31,7 @@ type Selector struct {
 type SelectorTime struct {
 	Selector
 	Layout string
+	TZ     *time.Location
 }
 
 type queryFunc func(root *html.Node, selector Selector) []*html.Node
@@ -117,7 +118,7 @@ func (d *Document) FindTime(timeSelector SelectorTime) (time.Time, error) {
 		return time.Time{}, err
 	}
 
-	parsedTime, err := time.Parse(timeSelector.Layout, res)
+	parsedTime, err := time.ParseInLocation(timeSelector.Layout, res, timeSelector.TZ)
 	if err != nil {
 		return time.Time{}, err
 	}

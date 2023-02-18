@@ -1,11 +1,19 @@
 package config
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/witjem/feedpls/internal/pkg/feed"
 	"github.com/witjem/feedpls/internal/pkg/query"
 )
 
-func (f FeedConfig) toQueryFeedConfig() feed.Config {
+func (f FeedConfig) toQueryFeedConfig() (feed.Config, error) {
+	publishedTime, err := f.Matcher.Published.toQuerySelectorTime()
+	if err != nil {
+		return feed.Config{}, err
+	}
+
 	return feed.Config{
 		FeedID:      f.FeedID,
 		Title:       f.Title,
@@ -16,9 +24,9 @@ func (f FeedConfig) toQueryFeedConfig() feed.Config {
 			ItemURL:     f.Matcher.ItemURL.toQuerySelector(),
 			Title:       f.Matcher.Title.toQuerySelector(),
 			Description: f.Matcher.Description.toQuerySelector(),
-			Published:   f.Matcher.Published.toQuerySelectorTime(),
+			Published:   publishedTime,
 		},
-	}
+	}, nil
 }
 
 func (s Selector) toQuerySelector() query.Selector {
@@ -33,9 +41,19 @@ func (s Selector) toQuerySelector() query.Selector {
 	}
 }
 
-func (s Selector) toQuerySelectorTime() query.SelectorTime {
+func (s Selector) toQuerySelectorTime() (query.SelectorTime, error) {
+	if s.TimeZone == "" {
+		s.TimeZone = "UTC"
+	}
+
+	tz, err := time.LoadLocation(s.TimeZone)
+	if err != nil {
+		return query.SelectorTime{}, fmt.Errorf("failed load time zone %s, %v", s.TimeZone, err)
+	}
+
 	return query.SelectorTime{
 		Selector: s.toQuerySelector(),
 		Layout:   s.Layout,
-	}
+		TZ:       tz,
+	}, nil
 }
