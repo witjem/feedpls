@@ -35,6 +35,7 @@ type Selector struct {
 	// required field for time props
 	Layout   string `yaml:"layout"`
 	TimeZone string `yaml:"tz"`
+	Locale   string `yaml:"locale"`
 }
 
 type Function struct {

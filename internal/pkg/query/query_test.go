@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/html"
 
+	"github.com/goodsign/monday"
+
 	"github.com/witjem/feedpls/internal/pkg/query"
 )
 
@@ -18,6 +20,7 @@ var htmlPage = `
 	<meta data-react-helmet="true" name="twitter:description" content="Good news for world"/>
 	<meta data-react-helmet="true" name="twitter:title" content="Good news"/>
 	<meta name="content-date" content="January 2, 2022, 3:04 pm"/>
+	<date name="date-in-uk-UA-locale" content="Січень 2, 2022, 15:04"/>
 	<title>Good news</title>
 </head>
 `
@@ -70,9 +73,23 @@ func TestXPath(t *testing.T) {
 				Selector: query.Selector{Expr: "//meta[@name='content-date']/@content"},
 				Layout:   "January 2, 2006, 3:04 pm",
 				TZ:       timeLocation,
+				Locale:   monday.LocaleEnGB,
 			})
 		assert.NoError(t, err)
 		assert.Equal(t, time.Date(2022, 1, 2, 15, 4, 0, 0, timeLocation), actual)
+	})
+
+	t.Run("should parse time with timezone and uk_UA locale", func(t *testing.T) {
+		zone := time.FixedZone("UTC+3", 3*60*60)
+		actual, err := doc.FindTime(
+			query.SelectorTime{
+				Selector: query.Selector{Expr: "//date[@name='date-in-uk-UA-locale']/@content"},
+				Layout:   "January 2, 2006, 15:04",
+				TZ:       zone,
+				Locale:   monday.LocaleUkUA,
+			})
+		assert.NoError(t, err)
+		assert.Equal(t, time.Date(2022, 1, 2, 15, 4, 0, 0, zone), actual)
 	})
 }
 
@@ -116,6 +133,7 @@ func TestGoQuery(t *testing.T) {
 				Selector: query.Selector{Expr: "meta[name='content-date']", Attr: "content"},
 				Layout:   "January 2, 2006, 3:04 pm",
 				TZ:       timeLocation,
+				Locale:   monday.LocaleEnGB,
 			})
 		assert.NoError(t, err)
 		assert.Equal(t, time.Date(2022, 1, 2, 15, 4, 0, 0, timeLocation), actual)

@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/goodsign/monday"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/witjem/feedpls/internal/pkg/feed"
@@ -77,6 +78,7 @@ func TestGetFeed(t *testing.T) {
 					},
 					Layout: "2006-01-02T15:04:05Z",
 					TZ:     time.UTC,
+					Locale: monday.LocaleEnGB,
 				},
 			},
 		},

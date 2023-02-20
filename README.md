@@ -43,7 +43,8 @@ Example `feeds.yml`
       # Examples: https://pkg.go.dev/time#pkg-constants
       layout: "2006-01-02T15:04:05Z07:00"
       tz: "Europe/Kyiv" # Optional, default value UTC
-      
+      locale: "uk_UA" # Optional. Default en_GB. Used for parsing the date with layout like "January 2, 2006, 3:04 pm".
+
   # Optional property. Functions to be applied to the matched data after parsing.
   # For example if after parse you want to replace (or remove) some text to another.
   functions: 
@@ -87,6 +88,7 @@ Example `feeds.yml`
       # Examples: https://pkg.go.dev/time#pkg-constants
       layout: "2006-01-02T15:04:05Z07:00"
       tz: "Europe/Kyiv" # Optional, default value UTC
+      locale: "uk_UA" # Optional. Default en_GB. Used for parsing the date with layout like "January 2, 2006, 3:04 pm".
 ```
 
 ## Run

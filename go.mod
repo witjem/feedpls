@@ -11,6 +11,7 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/go-pkgz/lgr v0.10.4
 	github.com/go-pkgz/rest v1.16.0
+	github.com/goodsign/monday v1.0.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.17.1

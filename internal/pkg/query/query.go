@@ -7,6 +7,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/antchfx/htmlquery"
 	log "github.com/go-pkgz/lgr"
+	"github.com/goodsign/monday"
 	"golang.org/x/net/html"
 )
 
@@ -32,6 +33,7 @@ type SelectorTime struct {
 	Selector
 	Layout string
 	TZ     *time.Location
+	Locale monday.Locale
 }
 
 type queryFunc func(root *html.Node, selector Selector) []*html.Node
@@ -118,7 +120,7 @@ func (d *Document) FindTime(timeSelector SelectorTime) (time.Time, error) {
 		return time.Time{}, err
 	}
 
-	parsedTime, err := time.ParseInLocation(timeSelector.Layout, res, timeSelector.TZ)
+	parsedTime, err := monday.ParseInLocation(timeSelector.Layout, res, timeSelector.TZ, timeSelector.Locale)
 	if err != nil {
 		return time.Time{}, err
 	}
