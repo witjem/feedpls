@@ -21,7 +21,7 @@ RUN \
     go build -o /bin/app -ldflags "-X main.revision=${version} -s -w" ./cmd/server
 
 # Step 3: Final
-FROM scratch
+FROM alpine:3.14.2
+RUN apk add --no-cache ca-certificates tzdata
 COPY --from=builder /bin/app /app
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 CMD ["/app"]
