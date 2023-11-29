@@ -1,6 +1,6 @@
 <img class="logo" src="logo.svg" width="355px" height="142px" alt="FeedPLS"/>
 
-Feedpls is a simple web service to generate RSS/Atom for web page which does not have it.
+Feedpls is a simple service to generate RSS/Atom for web page which does not have it.
 
 [![Build Status](https://github.com/witjem/feedpls/actions/workflows/ci.yml/badge.svg)](https://github.com/witjem/feedpls/actions)
 [![Image Size](https://img.shields.io/docker/image-size/witjem/feedpls/main)](https://hub.docker.com/r/witjem/feedpls)
